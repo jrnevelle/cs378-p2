@@ -9,7 +9,7 @@ const MenuItem = ({ title, description, price, img }) => {
     return (
     <div class="row align-items-center mb-4">
       <div class="col-5">
-        <img src={img} class="item_img" alt="picture of a bagel sandwich"></img>
+        <img src={`/images/${img}`} class="item_img" alt={description}></img>
       </div>
       <div class="col-7">
         <div class="row">
