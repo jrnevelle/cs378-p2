@@ -85,6 +85,7 @@ function App() {
   const [subtotal, setSubtotal] = useState (0);
 
   const increaseQuantity = (id, price) => {
+    id--;
     setQuantities(prevQuantities => ({
       ...prevQuantities,
       [id]: (prevQuantities[id] || 0) + 1
@@ -93,6 +94,7 @@ function App() {
   }
 
   const decreaseQuantity = (id, price) => {
+    id--;
     if (quantities[id] && quantities[id] > 0) {
       setSubtotal(subtotal - price);
     }
@@ -103,7 +105,7 @@ function App() {
   }
 
   const submit = () => {
-    if (subtotal == 0)
+    if (subtotal === 0)
     {
       alert("No Items In Cart!");
       return;
@@ -155,7 +157,7 @@ function App() {
             img={item.imageName} 
             increaseQuantity={increaseQuantity}
             decreaseQuantity={decreaseQuantity}
-            quantity={quantities[item.id] || 0}
+            quantity={quantities[item.id - 1] || 0}
           /> 
         ))}
     <div class="row justify-content-between">
