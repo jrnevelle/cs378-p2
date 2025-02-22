@@ -1,5 +1,6 @@
 import './App.css';
 import MenuItem from './components/MenuItem';
+import {useState} from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css'; // This imports bootstrap css styles. You can use bootstrap or your own classes by using the className attribute in your elements.
 
@@ -80,6 +81,58 @@ const menuItems = [
 
 
 function App() {
+  const [quantities, setQuantities] = useState({});
+  const [subtotal, setSubtotal] = useState (0);
+
+  const increaseQuantity = (id, price) => {
+    setQuantities(prevQuantities => ({
+      ...prevQuantities,
+      [id]: (prevQuantities[id] || 0) + 1
+    }));
+    setSubtotal(subtotal + price);
+  }
+
+  const decreaseQuantity = (id, price) => {
+    if (quantities[id] && quantities[id] > 0) {
+      setSubtotal(subtotal - price);
+    }
+    setQuantities(prevQuantities => ({
+      ...prevQuantities,
+      [id]: (prevQuantities[id] && prevQuantities[id] > 0)?  prevQuantities[id] - 1 : 0
+    }));
+  }
+
+  const submit = () => {
+    if (subtotal == 0)
+    {
+      alert("No Items In Cart!");
+      return;
+    }
+    var result = "";
+    for (let i = 0; i < menuItems.length; i++)
+    {
+      if (quantities[i] && quantities[i] > 0)
+      {
+        result += quantities[i] + " " + menuItems[i].title + "\n";
+      }
+    }
+    alert("Order Placed!\n" + result);
+  }
+
+  const clear = () => {
+    for (let i = 0; i < menuItems.length; i++)
+    {
+      if (quantities[i])
+      {
+        setQuantities(prevQuantities => ({
+          ...prevQuantities,
+          [i]: 0
+        }));
+      }
+    }
+    setSubtotal(0);
+  }
+
   return (
     <div class="container">
     <div class="row mb-2">
@@ -94,9 +147,24 @@ function App() {
       </div>
     </div>
         {menuItems.map((item) => (
-          <MenuItem title={item.title} description={item.description} price={item.price} img={item.imageName} /> 
+          <MenuItem 
+            id={item.id}
+            title={item.title} 
+            description={item.description} 
+            price={item.price} 
+            img={item.imageName} 
+            increaseQuantity={increaseQuantity}
+            decreaseQuantity={decreaseQuantity}
+            quantity={quantities[item.id] || 0}
+          /> 
         ))}
+    <div class="row justify-content-between">
+      <div class="col"><p>${Math.max(0, subtotal).toFixed(2)}</p></div>
+      <div class="col"><button onClick={() => submit()}>Order</button></div>
+      <div class="col"><button onClick={() => clear()}>Clear All</button></div>
     </div>
+    </div>
+    
   );
 }
 
